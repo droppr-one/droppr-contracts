@@ -41,6 +41,7 @@ const config: HardhatUserConfig = {
     },
     spark: {
       url: "https://rpc.fusespark.io",
+      gasPrice: 1000000000,
       accounts: [PRIVATE_KEY],
     },
   },
