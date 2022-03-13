@@ -77,7 +77,7 @@ contract AirdropDistributor is FeeManager {
         }
     }
 
-    function sendTokensMultipleValues (address[] memory recipients, uint256[] memory amounts, address asset) public payable {
+    function sendTokensManyValues (address[] memory recipients, uint256[] memory amounts, address asset) public payable {
         uint256 totalAmount = sum(amounts);
 
         require(IERC20(asset).allowance(msg.sender, address(this)) >= totalAmount, "Insufficient allowance");
