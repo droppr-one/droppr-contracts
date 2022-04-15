@@ -9,13 +9,10 @@ import "./FeeManager.sol";
 contract AirdropDistributor is FeeManager {
     using SafeMath for uint256;
 
-    // solhint-disable-next-line
-    constructor (uint256 _serviceFee, uint256 _partnerFee) FeeManager (_serviceFee, _partnerFee){}
-
-
     function withdraw (address asset) public onlyOwner {
         if (asset == address(0)){
             payable(msg.sender).transfer(address(this).balance);
+            return;
         }
         uint256 tokenBalance = IERC20(asset).balanceOf(address(this));
         IERC20(asset).transfer(msg.sender, tokenBalance);
@@ -27,7 +24,7 @@ contract AirdropDistributor is FeeManager {
         if(isSubscribed(msg.sender)){
             require(msg.value >= totalAmount, "Insufficient amount");
         } else {
-            require(msg.value >= totalAmount.add(serviceFee), "Insufficient amount");
+            require(msg.value >= totalAmount.add(serviceFee()), "Insufficient amount");
         }
         require(recipients.length <= 256, "Recipients array too big");
         for(uint16 i=0 ; i<recipients.length ; i++){
@@ -49,7 +46,7 @@ contract AirdropDistributor is FeeManager {
         if(isSubscribed(msg.sender)){
             require(msg.value >= totalAmount, "Insufficient amount");
         } else {
-            require(msg.value >= totalAmount.add(serviceFee), "Insufficient amount");
+            require(msg.value >= totalAmount.add(serviceFee()), "Insufficient amount");
         }
         require(recipients.length <= 256, "Recipients array too big");
         for(uint16 i=0 ; i<recipients.length ; i++){
@@ -70,7 +67,7 @@ contract AirdropDistributor is FeeManager {
             IERC20(asset).balanceOf(msg.sender) >= totalAmount,
             "Insufficient balance"
         );
-        require(isSubscribed(msg.sender) || msg.value >= serviceFee, "Insufficient fees");
+        require(isSubscribed(msg.sender) || msg.value >= serviceFee(), "Insufficient fees");
 
         for(uint16 i=0 ; i<recipients.length ; i++){
             require(IERC20(asset).transferFrom(msg.sender, recipients[i], amount), "");
@@ -82,7 +79,7 @@ contract AirdropDistributor is FeeManager {
 
         require(IERC20(asset).allowance(msg.sender, address(this)) >= totalAmount, "Insufficient allowance");
         require(IERC20(asset).balanceOf(msg.sender) >= totalAmount, "Insufficient balance");
-        require(isSubscribed(msg.sender) || msg.value >= serviceFee, "Insufficient fees");
+        require(isSubscribed(msg.sender) || msg.value >= serviceFee(), "Insufficient fees");
 
         for(uint16 i=0 ; i<recipients.length ; i++){
             require(IERC20(asset).transferFrom(msg.sender, recipients[i], amounts[i]), "");

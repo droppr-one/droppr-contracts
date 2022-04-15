@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
-const SERVICE_FEE = ethers.utils.parseEther("0.05").toString();
-const PARTNER_FEE = ethers.utils.parseEther("0.5").toString();
+const SERVICE_FEE = ethers.utils.parseEther("0.12").toString();
+const PARTNER_FEE = ethers.utils.parseEther("4.82").toString();
 
 async function main() {
   const [deployer] = await ethers.getSigners();
